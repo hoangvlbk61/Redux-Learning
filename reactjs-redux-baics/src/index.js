@@ -1,10 +1,10 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 // import './index.css';
-// import App from './App';
+import App from './App';
 // import * as serviceWorker from './serviceWorker';
+import {Provider} from 'react-redux';
 
-// ReactDOM.render(<App />, document.getElementById('root'));
 
 // // If you want your app to work offline and load faster, you can change
 // // unregister() to register() below. Note this comes with some pitfalls.
@@ -15,29 +15,30 @@
 import {createStore, combineReducers, applyMiddleware} from "redux" ; 
 import logger from "redux-logger" ; 
 
+
 const mathReducer = (state  = { 
-                    result: 100 , 
-                    lastValues: []
-                    }, action) => { 
+    result: 100 , 
+    lastValues: []
+}, action) => { 
     let newState = {...state} ; 
     console.log(newState.result);
     switch(action.type) { 
         case "ADD": 
-            newState = { 
-                ...newState, 
-                lastValues: [...newState.lastValues, newState.result] 
-            }
-            newState.result = newState.result + action.payload ; 
-            break; 
+        newState = { 
+            ...newState, 
+            lastValues: [...newState.lastValues, newState.result] 
+        }
+        newState.result = newState.result + action.payload ; 
+        break; 
         case "SUBTRACT": 
         newState = { 
-                ...newState, 
-                lastValues: [...newState.lastValues, newState.result] 
-            }
-            newState.result = newState.result - action.payload ; 
-            break; 
+            ...newState, 
+            lastValues: [...newState.lastValues, newState.result] 
+        }
+        newState.result = newState.result - action.payload ; 
+        break; 
         default: 
-            break; 
+        break; 
     }
     return newState ; 
 }
@@ -45,19 +46,19 @@ const mathReducer = (state  = {
 const userReducer = (state = { name: "Unknown", age: 18}, action) => { 
     switch(action.type) { 
         case "SET_NAME": 
-            state = { 
-                ...state, 
-                name: action.payload
-            }
-            break; 
+        state = { 
+            ...state, 
+            name: action.payload
+        }
+        break; 
         case "SET_AGE": 
         state = { 
-                ...state, 
-                age: action.payload
-            }
-            break; 
+            ...state, 
+            age: action.payload
+        }
+        break; 
         default: 
-            break; 
+        break; 
     }
     return state ; 
 }
@@ -67,34 +68,16 @@ const myLoggerAsMiddleWare = (store) => (next) => (action) => {
     next(action);
 }
 
-const store = createStore(combineReducers({mathReducer, userReducer}), {}, applyMiddleware(logger)) ; 
+const store = createStore(combineReducers({math: mathReducer, user: userReducer}), {}, applyMiddleware(logger)) ; 
 
 store.subscribe(() => { 
     // console.log("Store updated", store.getState()); 
 })
 
-store.dispatch({ 
-    type: "ADD" , 
-    payload: 100 
-})
 
-store.dispatch({ 
-    type: "SUBTRACT", 
-    payload: 200
-})
-
-store.dispatch({ 
-    type: "ADD" ,
-    payload: 200 
-})
-
-
-store.dispatch({ 
-    type: "SET_AGE", 
-    payload: 200
-})
-
-store.dispatch({
-    type: "SET_NAME" , 
-    payload: "Leehoang"
-})
+ReactDOM.render(
+    <Provider store={store}>
+        <App />
+    </Provider>
+    , document.getElementById('root')
+);
