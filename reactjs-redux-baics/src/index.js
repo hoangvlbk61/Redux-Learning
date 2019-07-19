@@ -12,15 +12,12 @@
 // serviceWorker.unregister();
 
 
-import {createStore} from "redux" ; 
+import {createStore, combineReducers} from "redux" ; 
 
-// default state
-const initialState = { 
-       result: 100 , 
-       lastValues: []
-}
-
-const reducer = (state = initialState, action) => { 
+const mathReducer = (state  = { 
+                    result: 100 , 
+                    lastValues: []
+                    }, action) => { 
     let newState = {...state} ; 
     console.log(newState.result);
     switch(action.type) { 
@@ -32,7 +29,7 @@ const reducer = (state = initialState, action) => {
             newState.result = newState.result + action.payload ; 
             break; 
         case "SUBTRACT": 
-            newState = { 
+        newState = { 
                 ...newState, 
                 lastValues: [...newState.lastValues, newState.result] 
             }
@@ -44,7 +41,27 @@ const reducer = (state = initialState, action) => {
     return newState ; 
 }
 
-const store = createStore(reducer, ) ; 
+const userReducer = (state = { name: "Unknown", age: 18}, action) => { 
+    switch(action.type) { 
+        case "SET_NAME": 
+            state = { 
+                ...state, 
+                name: action.payload
+            }
+            break; 
+        case "SET_AGE": 
+        state = { 
+                ...state, 
+                age: action.payload
+            }
+            break; 
+        default: 
+            break; 
+    }
+    return state ; 
+}
+
+const store = createStore(combineReducers({mathReducer, userReducer}) ) ; 
 
 store.subscribe(() => { 
     console.log("Store updated", store.getState()); 
@@ -63,4 +80,15 @@ store.dispatch({
 store.dispatch({ 
     type: "ADD" ,
     payload: 200 
+})
+
+
+store.dispatch({ 
+    type: "SET_AGE", 
+    payload: 200
+})
+
+store.dispatch({
+    type: "SET_NAME" , 
+    payload: "Leehoang"
 })
