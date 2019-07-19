@@ -12,7 +12,8 @@
 // serviceWorker.unregister();
 
 
-import {createStore, combineReducers} from "redux" ; 
+import {createStore, combineReducers, applyMiddleware} from "redux" ; 
+import logger from "redux-logger" ; 
 
 const mathReducer = (state  = { 
                     result: 100 , 
@@ -61,10 +62,15 @@ const userReducer = (state = { name: "Unknown", age: 18}, action) => {
     return state ; 
 }
 
-const store = createStore(combineReducers({mathReducer, userReducer}) ) ; 
+const myLoggerAsMiddleWare = (store) => (next) => (action) => { 
+    console.log("Logger action: ", action) ; 
+    next(action);
+}
+
+const store = createStore(combineReducers({mathReducer, userReducer}), {}, applyMiddleware(logger)) ; 
 
 store.subscribe(() => { 
-    console.log("Store updated", store.getState()); 
+    // console.log("Store updated", store.getState()); 
 })
 
 store.dispatch({ 
